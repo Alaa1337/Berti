@@ -1,0 +1,43 @@
+       .btn {
+            background-color: deepskyblue;
+            width: 300px;
+            border: 1px solid black;
+            margin-bottom: 40px;
+
+        }
+
+        body {
+            background-color: lemonchiffon;
+        }
+
+        .btn:hover {
+            background-color: #008aff;
+            width: 301px;
+            border: 1px solid black;
+
+
+        }
+
+        .button-1 {
+            margin-top: 150px;
+
+        }
+
+        .lastline {
+
+            height: 240px;
+
+        }
+
+        .container {
+
+            background-color: darkseagreen;
+        }
+
+
+        .headline {
+
+            font-size: 100px;
+            padding-top: 15px;
+
+        }
