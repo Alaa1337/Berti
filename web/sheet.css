@@ -1,3 +1,5 @@
+
+
        .btn {
             background-color: deepskyblue;
             width: 300px;
@@ -6,39 +8,46 @@
 
         }
 
+       #navb{
+           border-left:1px solid black
+
+       }
+
         body {
             background-color: deepskyblue;
         }
 
         .btn:hover {
             background-color: #008aff;
-            width: 301px;
+
             border: 1px solid black;
 
 
         }
 
         .button-1 {
+
             margin-top: 150px;
+
+        }
+
+        .navbar{
+            border-bottom: 1px solid black;
 
         }
 
         .lastline {
 
-            height: 240px;
+            height: 100%;
 
         }
 
         .container {
 
             background-color: ghostwhite;
+
         }
 
-		.active {
-
-			background-color: white;
-
-		}
 
 
         .headline {
@@ -47,3 +56,93 @@
             padding-top: 15px;
 
         }
+
+
+       @media (max-width: 1200px) {
+
+           .headline {
+               font-size: 50px;
+               padding-top: 15px;
+
+           }
+
+
+           @media (max-width: 991px) {
+
+               .responsivetext{
+
+                   font-size: small;
+
+               }
+
+       }
+
+
+
+
+       @media (max-width: 767px) {
+
+
+           #navb{
+               border-left: none;
+
+           }
+
+       }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       #responsiveinfo {
+       display: block;
+       position: fixed;
+       left: 10px;
+       bottom: 10px;
+       padding: 5px 10px;
+       color: #000;
+       text-shadow: 0 0 1px #FFF;
+       font-weight: bold;
+       font-size: 11px;
+   }
+
+
+
+   @media (max-width: 575.98px) {                                                  /* rgba(226, 0, 122, .75); */
+       #responsiveinfo { background: rgba(226, 0, 122, .75); }
+       #responsiveinfo:before { content: "0-767px (xs)"; }
+   }
+   @media (min-width: 576px) and (max-width: 767.98px) {                           /* rgba(192, 192, 0, .75); */
+       #responsiveinfo { background: rgba(192, 192, 0, .75); }
+       #responsiveinfo:before { content: "0-767px (sm)"; }
+   }
+   @media (min-width: 768px) and (max-width: 991.98px) {                           /* rgba(0, 255, 0, .75); */
+       #responsiveinfo { background: rgba(0, 255, 0, .75); }
+       #responsiveinfo:before { content: "768-991px (md)"; }
+   }
+   @media (min-width: 992px) and (max-width: 1199.98px) {                          /* rgba(255, 102, 0, .75); */
+       #responsiveinfo { background: rgba(255, 102, 0, .75); }
+       #responsiveinfo:before { content: "992-1199px (lg)"; }
+   }
+   @media (min-width: 1200px) {                                                    /* rgba(0, 158, 224, .75); */
+       #responsiveinfo { background: rgba(0, 158, 224, .75); }
+       #responsiveinfo:before { content: "1200px (xl)"; }
+   } }

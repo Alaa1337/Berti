@@ -1,83 +1,268 @@
-
 <html>
 
 
 <head>
+
     <title>BERICHTSHEFT</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <script src="js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="sheet.css">
-	
-	
-	
-	
-	
-	
-	
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
 </head>
 
 
 <?php
+
+error_reporting(-1);
+ini_set("display_errors", 1);
+
+session_start();
+//var_dump($_SESSION);
+
+
 include __DIR__.'/template.php';
+include __DIR__.'/db_functions.php';
+require_once __DIR__.'/vendor/autoload.php';
+
+opendb('berti.sqlite3');
+init_db();
 
 
 switch ($_GET['page']) {
+
     case 'login':
         $contentHeader = "Login";
         $content = $variables['login'];
-		$var1 = '<h1> Login </h1>';
-		echo '<style>#loginbtn{background-color:#549eff; } </style>';
+        echo '<style>#loginbtn{background-color:#549eff; } </style>';
         break;
+
     case 'registrieren':
         $contentHeader = "Registrieren";
         $content = $variables['register'];
-		$var1 = '<h1> registrieren </h1>';
-		echo '<style>#registerbtn{background-color:#549eff; } </style>';
+        echo '<style>#registerbtn{background-color:#549eff; } </style>';
         break;
-	case 'impressum':
-		$contentHeader = "Impressum";
-		echo '<style>#impressumbtn{background-color:#549eff; } </style>';
-		break;
-	case 'datenschutz':
-		$contentHeader = "Datenschutz";
-		echo '<style>#datenschutzbtn{background-color:#549eff; } </style>';
-		break;
-    default:
+
+    case 'impressum':
+        $contentHeader = "Impressum";
+        $content = $variables['impressum'];
+        echo '<style>#impressumbtn{background-color:#549eff; } </style>';
+        break;
+
+    case 'settings':
+        $contentHeader = "Einstellungen";
+        $content = $variables['settings'];
+        echo '<style>#loginbtn{background-color:#549eff; } </style>';
+        break;
+
+    case 'datenschutz':
+        $contentHeader = "Datenschutz";
+        $content = $variables['datenschutz'];
+        echo '<style>#datenschutzbtn{background-color:#549eff; } </style>';
+        break;
+
+    default :
         $contentHeader = "Willkommen";
         $content = $variables['start'];
-		echo '<style>#startbtn{background-color:#549eff; } </style>';
+        echo '<style>#startbtn{background-color:#549eff; } </style>';
         break;
 }
 
 
+//If Submit Button Is Clicked Do the Following
 
+
+if (isset($_POST['registerbutton'])) {
+
+    $data = [];
+
+    $myFile = "data.txt";
+    $myFile2 = "data2.txt";
+
+
+    $databaseentry = '';
+
+
+    $data_mail = str_pad(secure_for_db_input($_POST['email']), 128, ' ', STR_PAD_RIGHT);
+
+
+    $data_password = str_pad(password_scramble($_POST['password']), 128, ' ', STR_PAD_RIGHT);
+    $data_firstname = str_pad(secure_for_db_input($_POST['firstname']), 128, ' ', STR_PAD_RIGHT);
+    $data_lastname = str_pad(secure_for_db_input($_POST['lastname']), 128, ' ', STR_PAD_RIGHT);
+
+    $finaldata = $data_mail.'|'.$data_password.'|'.$data_firstname.'|'.$data_lastname.'|'.PHP_EOL;
+
+
+    $array = [];
+
+    $array [$_POST ['email']] = $_POST;
+
+
+    file_put_contents($myFile2, json_encode($array, 128));
+
+
+    if (check_username_free($_POST['email'])) {
+
+
+
+
+
+        $fh = fopen($myFile, 'ab') or die("can't open file");
+
+        $transport = (new Swift_SmtpTransport('sslout.de', 465))
+            ->setUsername('noreply@itspoon.com')
+            ->setPassword('phpgf=8EZgp9BCdK')
+            ->setTimeout(5)
+            ->setAuthMode('plain')
+            ->setEncryption('ssl');
+
+        $mailer = new Swift_Mailer($transport);
+
+        $message = (new Swift_Message('Wonderful Subject'))
+            ->setFrom(['noreply@itspoon.com' => 'test'])
+            ->setTo([$_POST['email'] => 'TEST'])
+            ->setBody('Here is the message itself');
+
+        $result = $mailer->send($message);
+
+
+        fwrite($fh, $finaldata);
+        fclose($fh);
+
+
+
+
+
+
+    }
+
+
+}
+
+
+if (isset($_POST['loginbutton'])) {
+
+
+    $userpassword = $_POST['loginpassword'];
+    $usermail = $_POST['loginmail'];
+
+
+    login($usermail, $userpassword);
+
+    if (login($usermail, $userpassword) === true) {
+
+
+        $_SESSION ['logged_in'] = true;
+        $_SESSION ['email'] = $usermail;
+
+    }
+
+
+}
+//var_dump ($_GET);
+
+if ($_GET['page'] === 'logout') {
+
+    session_destroy();
+
+
+}
+
+//var_dump($_POST);
+
+if ($_GET['page'] === 'delete') {
+
+    delete();
+
+   $_GET['page'] = 'logout';
+    session_destroy();
+
+
+
+}
 
 
 ?>
-
 
 
 <body>
 
 <div class="container">
 
+
     <div class="row">
 
-	<?php
-	
-	include('menu.php');
-	
-	?>
-	
-	<?php
-	
-	include('content.php');
-	
-	?>
-	
-	</div>
+        <?php
+
+        include('content.php');
+
+        ?>
+
+
+        <?php
+
+        include('menu.php');
+        ?>
+
+    </div>
 
 </div>
-	
+
+
+<?PHP if (in_array($_SERVER['REMOTE_ADDR'], array("127.0.0.1", "10.0.0.126"))) { ?>
+    <div id="responsiveinfo"></div>
+<?PHP } ?>
+
+
+<script>
+    function makeid() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (var i = 0; i < 20; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+
+
+    /*
+
+        function spam() {
+
+
+            const data = new FormData();
+
+            data.append('firstname', makeid());
+            data.append('lastname', makeid());
+            data.append('email', makeid() + "@" + makeid() + ".com\r\nbl💩a");
+
+            data.append('password', makeid());
+            data.append('registerbutton', 'registerbutton');
+
+            axios({
+                method: 'post',
+                url: '/?page=registrieren',
+                data: data,
+                config: {headers: {'Content-Type': 'multipart/form-data'}}
+            }).catch(function (error) {
+                console.log(error);
+            }).finally(function () {
+                spam();
+            });
+        }
+
+
+    */
+
+
+</script>
+
+
 </body>
+
 </html>
