@@ -21,7 +21,7 @@
 error_reporting(-1);
 ini_set("display_errors", 1);
 
-session_start();
+ session_start();
 //var_dump($_SESSION);
 
 
@@ -31,6 +31,13 @@ require_once __DIR__.'/vendor/autoload.php';
 
 opendb('berti.sqlite3');
 init_db();
+
+
+
+
+
+echo $test2;
+
 
 
 switch ($_GET['page']) {
@@ -56,13 +63,19 @@ switch ($_GET['page']) {
     case 'settings':
         $contentHeader = "Einstellungen";
         $content = $variables['settings'];
-        echo '<style>#loginbtn{background-color:#549eff; } </style>';
+        echo '<style>#settingsbtn{background-color:#549eff; } </style>';
         break;
 
     case 'datenschutz':
         $contentHeader = "Datenschutz";
         $content = $variables['datenschutz'];
         echo '<style>#datenschutzbtn{background-color:#549eff; } </style>';
+        break;
+
+    case 'berichtsheft':
+        $contentHeader = "Berichtsheft";
+        $content = $variables['berichtsheft'];
+        echo '<style>#berichtsheftbtn{background-color:#549eff; } </style>';
         break;
 
     default :
@@ -78,40 +91,18 @@ switch ($_GET['page']) {
 
 if (isset($_POST['registerbutton'])) {
 
-    $data = [];
-
-    $myFile = "data.txt";
-    $myFile2 = "data2.txt";
 
 
-    $databaseentry = '';
-
-
-    $data_mail = str_pad(secure_for_db_input($_POST['email']), 128, ' ', STR_PAD_RIGHT);
-
-
-    $data_password = str_pad(password_scramble($_POST['password']), 128, ' ', STR_PAD_RIGHT);
-    $data_firstname = str_pad(secure_for_db_input($_POST['firstname']), 128, ' ', STR_PAD_RIGHT);
-    $data_lastname = str_pad(secure_for_db_input($_POST['lastname']), 128, ' ', STR_PAD_RIGHT);
-
-    $finaldata = $data_mail.'|'.$data_password.'|'.$data_firstname.'|'.$data_lastname.'|'.PHP_EOL;
-
-
-    $array = [];
-
-    $array [$_POST ['email']] = $_POST;
-
-
-    file_put_contents($myFile2, json_encode($array, 128));
 
 
     if (check_username_free($_POST['email'])) {
 
 
 
+        add_user($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname']);
 
+        password_check($_POST['email'],$_POST['password']);
 
-        $fh = fopen($myFile, 'ab') or die("can't open file");
 
         $transport = (new Swift_SmtpTransport('sslout.de', 465))
             ->setUsername('noreply@itspoon.com')
@@ -125,20 +116,14 @@ if (isset($_POST['registerbutton'])) {
         $message = (new Swift_Message('Wonderful Subject'))
             ->setFrom(['noreply@itspoon.com' => 'test'])
             ->setTo([$_POST['email'] => 'TEST'])
-            ->setBody('Here is the message itself');
+            ->setBody('http://berti/?page=verify&code='.getcode());
 
         $result = $mailer->send($message);
 
 
-        fwrite($fh, $finaldata);
-        fclose($fh);
-
-
-
-
-
-
     }
+
+
 
 
 }
@@ -164,27 +149,29 @@ if (isset($_POST['loginbutton'])) {
 
 }
 //var_dump ($_GET);
+if (array_key_exists('page', $_GET)) {
+    if ($_GET['page'] === 'logout') {
 
-if ($_GET['page'] === 'logout') {
+        session_destroy();
+        header('Location: ?page=start');
 
-    session_destroy();
 
-
-}
+    }
 
 //var_dump($_POST);
 
-if ($_GET['page'] === 'delete') {
+    if ($_GET['page'] === 'delete') {
 
-    delete();
+        delete();
 
-   $_GET['page'] = 'logout';
-    session_destroy();
+        $_GET['page'] = 'logout';
+
+        session_destroy();
 
 
-
+    }
 }
-
+verification();
 
 ?>
 

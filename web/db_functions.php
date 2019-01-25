@@ -1,4 +1,6 @@
 <?php
+
+/** @var $link PDO */
 global $link;
 
 
@@ -7,67 +9,91 @@ function opendb($file)
     global $link;
     $link = new PDO('sqlite:'.$file);
     $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
+    function init_db()
+    {
+        global $link;
+        $link->exec(
+            'CREATE TABLE IF NOT EXISTS `users` (
+            `id`	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            `verified`	INTEGER,
+            `verification_code` TEXT UNIQUE,
+            `registerdate`	TEXT,
+            `email`	TEXT UNIQUE,
+            `password`	TEXT,
+            `firstname`	TEXT,
+            `lastname`	TEXT,
+            `sw_user_id`	INTEGER,
+            `sw_company_id`	INTEGER
+        );'
+        );
+
+        $link->exec(
+            '
+            CREATE TABLE IF NOT EXISTS `log` (
+                `id`	    INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                `user_id`	INTEGER,
+                `date`	    TEXT,
+                `action`	TEXT
+            );'
+        );
+    }
 }
-
-function init_db()
-{
-    global $link;
-    $link->exec(
-        'CREATE TABLE IF NOT EXISTS `users` (
-	`id`	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`verified`	INTEGER,
-	`registerdate`	TEXT,
-	`email`	TEXT,
-	`password`	TEXT,
-	`firstname`	TEXT,
-	`lastname`	TEXT,
-	`sw_user_id`	INTEGER,
-	`sw_company_id`	INTEGER,
-	`deleted`	INTEGER
-);'
-    );
-
-}
-
 
 // Checks if the $email is in the database already
 function check_username_free($email)
 {
-
-    $data = file('data.txt');
-
-    foreach ($data as $dbentry) {
-        $possible_email = substr($dbentry, 0, 127);
-
-        if (strpos($possible_email, secure_for_db_input($email)) === 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
+    global $link;
 
 
-// Takes a string and makes it "database" "safe"
-function secure_for_db_input($value)
-{
+    $sql = 'SELECT email FROM users WHERE email = :email ';
+    $stmt = $link->prepare($sql);
+    $stmt->bindValue(':email', strtolower($email));
+    $stmt->execute();
 
-    $bla = [];
+    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // var_dump($res);
 
-    if (preg_match_all('/([A-Za-z0-9\.\-_@])/', $value, $bla) >= 1) {
+    if (empty($res)) {
 
-        $value = preg_replace('/([^A-Za-z0-9\.\-_@])/', '', $value);
-
-
-        return $value;
-
+        return true;
 
     }
 
     return false;
 
 }
+
+function add_user($email, $password, $firstname, $lastname)
+{
+    $date = new DateTime('now');
+    $now = $date->format('Y-m-d H:i:s');
+
+    $length = 15;
+    $code = substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+    var_dump($code);
+
+    global $link;
+    $sql = 'INSERT INTO users(email,password,firstname,lastname,registerdate,verified,verification_code) VALUES(:email,:password,:firstname,:lastname,:registerdate,:verified,:code)';
+    /** @var  $stmt PDOStatement */
+    $stmt = $link->prepare($sql);
+    $stmt->bindValue(':verified' , 0);
+    $stmt->bindValue(':registerdate', $now);
+    $stmt->bindValue(':code', $code);
+    $stmt->bindValue(':email', strtolower($email));
+    $stmt->bindValue(':password', password_scramble($password));
+    $stmt->bindValue(':firstname', $firstname);
+    $stmt->bindValue(':lastname', $lastname);
+
+    $stmt->execute();
+
+    return $link->lastInsertId();
+
+    return true;
+}
+
 
 
 // makes the pw unreadable to the admin and any 1337 h4xx0rs
@@ -88,106 +114,119 @@ function password_scramble($password)
 
 // - but still checkable for correctness
 // possibly split into two functions to see if the user exists at all
-function password_check($password)
+function password_check($email, $password)
 {
+    global $link;
+    $sql = 'SELECT password FROM users WHERE email = :email';
+    $stmt = $link->prepare($sql);
+    $stmt->bindValue(':email', $email);
+    $stmt->execute();
 
-    $data = file('data.txt');
-
-    foreach ($data as $dbentry) {
-        $possible_password = trim(substr($dbentry, 129, 128));
+    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-        if (password_verify($password, $possible_password) === true) {
+    if (empty($res)) {
 
-
-            return $password;
-
-        }
-
+        return false;
 
     }
 
+    $password_check = $res[0]['password'];
 
-}
-
-function email_check($email)
-{
-    $data = file('data.txt');
-
-    foreach ($data as $dbentry) {
-        $possible_email = trim(substr($dbentry, 0, 127));
-
-
-        if ($email === $possible_email) {
-
-
-            return $email;
-
-        }
-    }
-
-
+    return password_verify($password, $password_check);
 }
 
 
 function login($email, $password)
 {
+    global $link;
 
-    $data = file('data.txt');
-
-    foreach ($data as $dbentry) {
-        $possible_email = trim(substr($dbentry, 0, 127));
+    if (password_check(strtolower($email), $password)) {
 
 
-        if ($possible_email === $email) {
+        $sql = 'SELECT * FROM users WHERE email = :email';
+        $stmt = $link->prepare($sql);
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
 
-            $possible_password = trim(substr($dbentry, 129, 128));
-            if ($possible_password) {
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
 
-            }
 
-            return password_verify($password, $possible_password);
-        }
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user'] = $res;
+        header('Location: ?page=start');
+
+        return true;
     }
 
     return false;
+}
+
+
+
+
+function verification(){
+
+if (isset($_GET['code'])&& strlen($_GET['code']) > 1) {
+    global $link;
+
+
+    $sql = 'UPDATE users SET verified = 1 WHERE verification_code = :code';
+
+
+    $stmt = $link->prepare($sql);
+
+
+    $stmt->bindValue(':code', $_GET['code']);
+    $stmt->execute();
+
+    return true;
+
+}
+
+}
+
+function getcode(){
+
+    global $link;
+
+
+    $sql = 'SELECT verification_code FROM users WHERE email = :email';
+
+    $stmt = $link->prepare($sql);
+
+    $stmt->bindValue(':email', $_POST['email']);
+
+    $stmt->execute();
+
+    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+    return $res[0]['verification_code'];
 
 }
 
 
 function delete()
 {
-
-    $data = file('data.txt');
-
-    $delete = false;
-
-    foreach ($data as $key => $dbentry) {
+    global $link;
 
 
-        $possible_email = $_SESSION ['email'];
 
-        // $delete = str_replace($dbentry, $possible_email, '');
-
-
-        if ($possible_email === trim(substr($dbentry, 0, 127))) {
-
-            $data[$key] = '';
-            $delete = true;
-
-        }
+    if (!empty($_SESSION['user']['email'])) {
+        // @Margus Deleted = 0 = BS da DSGVO - LG tobi :3
+        $sql = 'DELETE FROM users WHERE email = :email';
+        $stmt = $link->prepare($sql);
+        $stmt->bindValue(':email', $_SESSION['user']['email']);
+        $stmt->execute();
 
 
+        header('Location: ?page=start');
+
+        return true;
     }
-
-    if ($delete) {
-        $newData = implode('', $data);
-        file_put_contents('data.txt', $newData);
-    }
-
 
 }
-
 
 

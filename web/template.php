@@ -119,7 +119,7 @@ informiert werden und Cookies nur im Einzelfall erlauben,
 die Annahme von Cookies für bestimmte Fälle oder generell ausschließen 
 sowie das automatische Löschen 
 der Cookies beim Schließen des Browser aktivieren. 
-Bei der Deaktivierung von Cookies kann die Funktionalität dieser Website eingeschränkt sein.</pre></div>'
+Bei der Deaktivierung von Cookies kann die Funktionalität dieser Website eingeschränkt sein.</pre></div>',
 
 
 ];
@@ -130,7 +130,9 @@ if (isset($_SESSION['logged_in'])) {
     $variables = [
 
 
-        'start' => '<div>Wilkommen </div>',
+        'start' => '<div>Willkommen '.$_SESSION['user']['firstname'].'</div>',
+        'berichtsheft' => '<div>Willkommen '.$_SESSION['user']['firstname'].'</div>',
+
 
 
         'settings' => '
