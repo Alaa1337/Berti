@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b17af21e-106d-4fda-88ad-f5a0cd12f6d8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../dokumentation/.~lock.berti_2019-01-07_001.odt#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b4ce3601-e737-4ff7-a868-5226dca3f6a8.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b4ce3601-e737-4ff7-a868-5226dca3f6a8.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alaa.falah@itspoon.com" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alaa_15@outlook.de" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/berti.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data2.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/db_functions.php" beforeDir="false" afterPath="$PROJECT_DIR$/db_functions.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template.php" beforeDir="false" afterPath="$PROJECT_DIR$/template.php" afterDir="false" />
@@ -76,12 +69,12 @@
     <session id="930915570">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.7" value="3" />
-          <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.open.time.8" value="2" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -104,7 +97,7 @@
         <counts>
           <entry key="cell" value="5" />
           <entry key="json" value="18" />
-          <entry key="php" value="4748" />
+          <entry key="php" value="5819" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
@@ -112,7 +105,7 @@
         <counts>
           <entry key="HTML" value="39" />
           <entry key="JSON" value="18" />
-          <entry key="PHP" value="4598" />
+          <entry key="PHP" value="5669" />
           <entry key="PLAIN_TEXT" value="1" />
           <entry key="SQL" value="33" />
           <entry key="Scratch" value="83" />
@@ -125,8 +118,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="35" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="769">
+              <caret line="146" column="13" selection-start-line="146" selection-start-column="13" selection-end-line="146" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -134,8 +127,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/db_functions.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="146" column="56" selection-start-line="146" selection-start-column="56" selection-end-line="146" selection-end-column="56" />
+            <state relative-caret-position="669">
+              <caret line="264" column="8" selection-start-line="264" selection-start-column="8" selection-end-line="264" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -152,8 +145,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/template.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2394">
-              <caret line="133" column="21" selection-start-line="133" selection-start-column="21" selection-end-line="133" selection-end-column="21" />
+            <state relative-caret-position="162">
+              <caret line="9" column="41" selection-start-line="9" selection-start-column="41" selection-end-line="9" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -181,6 +174,14 @@
       <find>date</find>
       <find>password_ch</find>
       <find>page</find>
+      <find>strto</find>
+      <find>email</find>
+      <find>ver</find>
+      <find>user</find>
+      <find>var_dump</find>
+      <find>var_dum</find>
+      <find>checkver</find>
+      <find>logged</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -190,8 +191,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/composer.json" />
-        <option value="$PROJECT_DIR$/template.php" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.php" />
+        <option value="$PROJECT_DIR$/template.php" />
         <option value="$PROJECT_DIR$/index.php" />
         <option value="$PROJECT_DIR$/db_functions.php" />
       </list>
@@ -272,18 +273,19 @@
       <workItem from="1548235858888" duration="15900000" />
       <workItem from="1548314103676" duration="26656000" />
       <workItem from="1548400535753" duration="2937000" />
-      <workItem from="1548406849179" duration="1502000" />
+      <workItem from="1548406849179" duration="10771000" />
+      <workItem from="1548660228350" duration="9333000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55281000" />
+    <option name="totallyTimeSpent" value="73883000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26279318" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26545843" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -351,17 +353,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/content.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
-        </state>
-      </provider>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.php">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/template.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2394">
-          <caret line="133" column="21" selection-start-line="133" selection-start-column="21" selection-end-line="133" selection-end-column="21" />
+        <state relative-caret-position="162">
+          <caret line="9" column="41" selection-start-line="9" selection-start-column="41" selection-end-line="9" selection-end-column="41" />
         </state>
       </provider>
     </entry>
@@ -375,20 +373,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.php">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/content.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
+        <state relative-caret-position="769">
+          <caret line="146" column="13" selection-start-line="146" selection-start-column="13" selection-end-line="146" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/db_functions.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="146" column="56" selection-start-line="146" selection-start-column="56" selection-end-line="146" selection-end-column="56" />
+        <state relative-caret-position="669">
+          <caret line="264" column="8" selection-start-line="264" selection-start-column="8" selection-end-line="264" selection-end-column="8" />
         </state>
       </provider>
     </entry>

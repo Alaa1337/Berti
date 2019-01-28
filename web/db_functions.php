@@ -41,9 +41,7 @@ function opendb($file)
     }
 }
 
-// Checks if the $email is in the database already
-function check_username_free($email)
-{
+function check_username_free($email) {
     global $link;
 
 
@@ -54,7 +52,7 @@ function check_username_free($email)
 
     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // var_dump($res);
+
 
     if (empty($res)) {
 
@@ -72,14 +70,22 @@ function add_user($email, $password, $firstname, $lastname)
     $now = $date->format('Y-m-d H:i:s');
 
     $length = 15;
-    $code = substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
-    var_dump($code);
+    $code = substr(
+        str_shuffle(
+            str_repeat(
+                $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                ceil($length / strlen($x))
+            )
+        ),
+        1,
+        $length
+    );
 
     global $link;
     $sql = 'INSERT INTO users(email,password,firstname,lastname,registerdate,verified,verification_code) VALUES(:email,:password,:firstname,:lastname,:registerdate,:verified,:code)';
     /** @var  $stmt PDOStatement */
     $stmt = $link->prepare($sql);
-    $stmt->bindValue(':verified' , 0);
+    $stmt->bindValue(':verified', 0);
     $stmt->bindValue(':registerdate', $now);
     $stmt->bindValue(':code', $code);
     $stmt->bindValue(':email', strtolower($email));
@@ -94,9 +100,6 @@ function add_user($email, $password, $firstname, $lastname)
     return true;
 }
 
-
-
-// makes the pw unreadable to the admin and any 1337 h4xx0rs
 function password_scramble($password)
 {
 
@@ -111,9 +114,6 @@ function password_scramble($password)
     return $password;
 }
 
-
-// - but still checkable for correctness
-// possibly split into two functions to see if the user exists at all
 function password_check($email, $password)
 {
     global $link;
@@ -123,7 +123,6 @@ function password_check($email, $password)
     $stmt->execute();
 
     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 
     if (empty($res)) {
 
@@ -152,7 +151,6 @@ function login($email, $password)
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
 
-
         $_SESSION['logged_in'] = true;
         $_SESSION['user'] = $res;
         header('Location: ?page=start');
@@ -164,30 +162,28 @@ function login($email, $password)
 }
 
 
+function verification()
+{
 
+    if (isset($_GET['code']) && strlen($_GET['code']) > 1) {
+        global $link;
 
-function verification(){
+        $sql = 'UPDATE users SET verified = 1 WHERE verification_code = :code';
 
-if (isset($_GET['code'])&& strlen($_GET['code']) > 1) {
-    global $link;
+        $stmt = $link->prepare($sql);
+        $stmt->bindValue(':code', $_GET['code']);
+        $stmt->execute();
 
+        return true;
 
-    $sql = 'UPDATE users SET verified = 1 WHERE verification_code = :code';
+    }
 
-
-    $stmt = $link->prepare($sql);
-
-
-    $stmt->bindValue(':code', $_GET['code']);
-    $stmt->execute();
-
-    return true;
-
-}
+    return false;
 
 }
 
-function getcode(){
+function getcode()
+{
 
     global $link;
 
@@ -202,8 +198,37 @@ function getcode(){
 
     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    //var_dump($res);
 
     return $res[0]['verification_code'];
+
+}
+
+
+function checkverification($email)
+{
+
+    global $link;
+
+    $sql = 'SELECT verified FROM users WHERE email = :email';
+
+    $stmt = $link->prepare($sql);
+
+    $stmt->bindValue(':email', $email);
+
+    $stmt->execute();
+
+    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+    if ($res[0]['verified'] === '0') {
+
+session_destroy();
+header('Location: ?page=login');
+
+
+    }
+
 
 }
 
@@ -211,7 +236,6 @@ function getcode(){
 function delete()
 {
     global $link;
-
 
 
     if (!empty($_SESSION['user']['email'])) {
@@ -226,6 +250,24 @@ function delete()
 
         return true;
     }
+
+}
+
+function correctpage(){
+
+    if (array_key_exists('logged_in', $_SESSION) && $_GET['page'] === 'login'){
+
+        header('Location: ?page=start');
+    }
+
+    if (array_key_exists('logged_in', $_SESSION) && $_GET['page'] === 'registrieren'){
+
+        
+        header('Location: ?page=start');
+
+    }
+
+
 
 }
 

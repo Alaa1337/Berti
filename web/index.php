@@ -17,13 +17,9 @@
 
 
 <?php
-
 error_reporting(-1);
-ini_set("display_errors", 1);
-
- session_start();
-//var_dump($_SESSION);
-
+ini_set('display_errors', 1);
+session_start();
 
 include __DIR__.'/template.php';
 include __DIR__.'/db_functions.php';
@@ -31,14 +27,6 @@ require_once __DIR__.'/vendor/autoload.php';
 
 opendb('berti.sqlite3');
 init_db();
-
-
-
-
-
-echo $test2;
-
-
 
 switch ($_GET['page']) {
 
@@ -85,24 +73,19 @@ switch ($_GET['page']) {
         break;
 }
 
-
-//If Submit Button Is Clicked Do the Following
-
-
 if (isset($_POST['registerbutton'])) {
 
-
-
-
-
     if (check_username_free($_POST['email'])) {
+        $_POST['email'] = strtolower($_POST['email']);
 
+        add_user(
+            strtolower($_POST['email']),
+            $_POST['password'],
+            ucwords(strtolower($_POST['firstname'])),
+            ucwords(strtolower($_POST['lastname']))
+        );
 
-
-        add_user($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname']);
-
-        password_check($_POST['email'],$_POST['password']);
-
+        password_check($_POST['email'], $_POST['password']);
 
         $transport = (new Swift_SmtpTransport('sslout.de', 465))
             ->setUsername('noreply@itspoon.com')
@@ -113,42 +96,31 @@ if (isset($_POST['registerbutton'])) {
 
         $mailer = new Swift_Mailer($transport);
 
-        $message = (new Swift_Message('Wonderful Subject'))
+        $message = (new Swift_Message('Wondefdsafdsrful Subject'))
             ->setFrom(['noreply@itspoon.com' => 'test'])
             ->setTo([$_POST['email'] => 'TEST'])
             ->setBody('http://berti/?page=verify&code='.getcode());
 
+
         $result = $mailer->send($message);
-
-
     }
-
-
-
-
 }
 
-
 if (isset($_POST['loginbutton'])) {
-
-
     $userpassword = $_POST['loginpassword'];
-    $usermail = $_POST['loginmail'];
-
-
+    $usermail = strtolower($_POST['loginmail']);
     login($usermail, $userpassword);
 
     if (login($usermail, $userpassword) === true) {
-
-
         $_SESSION ['logged_in'] = true;
         $_SESSION ['email'] = $usermail;
-
     }
-
-
 }
-//var_dump ($_GET);
+
+if (array_key_exists('email', $_SESSION)) {
+    checkverification($_SESSION['email']);
+}
+
 if (array_key_exists('page', $_GET)) {
     if ($_GET['page'] === 'logout') {
 
@@ -158,7 +130,7 @@ if (array_key_exists('page', $_GET)) {
 
     }
 
-//var_dump($_POST);
+
 
     if ($_GET['page'] === 'delete') {
 
@@ -171,7 +143,10 @@ if (array_key_exists('page', $_GET)) {
 
     }
 }
+
+correctpage();
 verification();
+
 
 ?>
 
@@ -205,49 +180,6 @@ verification();
 <?PHP } ?>
 
 
-<script>
-    function makeid() {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-        for (var i = 0; i < 20; i++)
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-        return text;
-    }
-
-
-    /*
-
-        function spam() {
-
-
-            const data = new FormData();
-
-            data.append('firstname', makeid());
-            data.append('lastname', makeid());
-            data.append('email', makeid() + "@" + makeid() + ".com\r\nbl💩a");
-
-            data.append('password', makeid());
-            data.append('registerbutton', 'registerbutton');
-
-            axios({
-                method: 'post',
-                url: '/?page=registrieren',
-                data: data,
-                config: {headers: {'Content-Type': 'multipart/form-data'}}
-            }).catch(function (error) {
-                console.log(error);
-            }).finally(function () {
-                spam();
-            });
-        }
-
-
-    */
-
-
-</script>
 
 
 </body>
